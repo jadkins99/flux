@@ -115,6 +115,7 @@ class _journeyCardState extends State<journeyCard> {
             onTap: () {
               // open the journey for this
               _openJourneyScreen(
+                journeyUuid: widget.uuid,
                 context: context,
                 fullScreen: false,
               );

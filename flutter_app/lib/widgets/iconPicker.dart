@@ -61,6 +61,7 @@ class _IconPickerState extends State<IconPicker> {
                       this.selectedIcon,
                       color: AppColors.inputColor,
                     ),
+                    Padding(padding: EdgeInsets.fromLTRB(12.0, 0, 0, 0),),
                     Text("Pick an icon",
                         style: TextStyle(
                           color: AppColors.inputColor,

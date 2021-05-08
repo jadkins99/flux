@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  uuid: 3.0.4
   flutter:
     sdk: flutter
 

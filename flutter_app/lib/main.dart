@@ -13,6 +13,7 @@ import 'package:e_commerce/services/catalog_service.dart';
 import 'package:e_commerce/services/user_service.dart';
 import 'package:e_commerce/storage/mock_store.dart';*/
 import 'package:flutter/material.dart';
+import 'package:flutter_app/blocs/journeyBloc.dart';
 
 /// In this app, we initialize the Firestore, AppBloc, and ServiceProvider
 /// right from the start, then inject them into the app.
@@ -24,6 +25,7 @@ Future<void> main() async {
 
   /// Starting here, everything is used regardless of dependencies
   var blocProvider = BlocProvider(
+    journey_bloc: journeyBloc()
   /*  cartBloc: CartBloc(cartService),
     catalogBloc: CatalogBloc(catalogService),
     userBloc: UserBloc(userService),*/
