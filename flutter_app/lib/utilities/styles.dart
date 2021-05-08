@@ -23,6 +23,8 @@ class AppColors {
   static const floatingActionButtonColor = Color(0xFF76C8E5);
   static const plusColor = Color(0xFFFFFFFF);
 
+  static const inputColor = Colors.blue;
+
   /// Text Theme
   /// For cards, content, and canvas:
   static const textColor = Color.fromRGBO(35, 35, 50, .7);

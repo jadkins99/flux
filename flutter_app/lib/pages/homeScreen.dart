@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/journeyScreen.dart';
+import 'package:flutter_app/pages/newJourneyScreen.dart';
 import 'package:flutter_app/utilities/styles.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:flutter_app/blocs/app_state.dart';
@@ -39,10 +40,26 @@ class _homeScreenState extends State<homeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _openNewJourneyScreen(
+            context: context,
+            fullScreen: false,
+          );
+        },
         child: Icon(Icons.add_outlined, color: AppColors.plusColor),
         backgroundColor: AppColors.floatingActionButtonColor,
       ),
+    );
+  }
+
+  void _openNewJourneyScreen({BuildContext context, bool fullScreen}) {
+    Navigator.push(
+        context,
+        // was material route!!! Using Cupertino is apparently not advisable
+        CupertinoPageRoute(
+            fullscreenDialog: fullScreen,
+            builder: (context) => newJourneyScreen()
+        )
     );
   }
 }
@@ -97,7 +114,7 @@ class _journeyCardState extends State<journeyCard> {
             ),
             onTap: () {
               // open the journey for this
-              _openJourneyPage(
+              _openJourneyScreen(
                 context: context,
                 fullScreen: false,
               );
@@ -106,13 +123,13 @@ class _journeyCardState extends State<journeyCard> {
     );
   }
 
-  void _openJourneyPage({String journeyUuid, BuildContext context, bool fullScreen}) {
+  void _openJourneyScreen({String journeyUuid, BuildContext context, bool fullScreen}) {
     Navigator.push(
         context,
         // was material route!!! Using Cupertino is apparently not advisable
         CupertinoPageRoute(
           fullscreenDialog: fullScreen,
-          builder: (context) => journeyScreen(journeyUuid: journeyUuid,),
+          builder: (context) => journeyScreen(journeyUuid: journeyUuid)
         )
     );
   }
