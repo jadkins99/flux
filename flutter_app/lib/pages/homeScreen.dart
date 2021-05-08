@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/journeyScreen.dart';
 import 'package:flutter_app/utilities/styles.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:flutter_app/blocs/app_state.dart';
+
 class homeScreen extends StatefulWidget {
   @override
   _homeScreenState createState() => _homeScreenState();
@@ -18,7 +21,6 @@ class _homeScreenState extends State<homeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     journey_bloc = state.blocProvider.journey_bloc;
 
     return Scaffold(
@@ -27,26 +29,20 @@ class _homeScreenState extends State<homeScreen> {
         title: Text("flux"),
       ),
       body: SafeArea(
-      child: SingleChildScrollView(
-
-        child: Column(
-          children: <Widget>[
-            journeyCard(uuid: "BS"),
-            journeyCard(uuid: "CS"),
-
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              journeyCard(uuid: "BS"),
+              journeyCard(uuid: "CS"),
+            ],
+          ),
         ),
-
-      ),),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-
-        child: Icon(Icons.add_outlined,
-        color: AppColors.plusColor),
-        backgroundColor: AppColors.floatingActionButtonColor,
-
       ),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add_outlined, color: AppColors.plusColor),
+        backgroundColor: AppColors.floatingActionButtonColor,
+      ),
     );
   }
 }
@@ -62,36 +58,62 @@ class journeyCard extends StatefulWidget {
 }
 
 class _journeyCardState extends State<journeyCard> {
-
-
   @override
   Widget build(BuildContext context) {
-    journeyBloc journey_bloc = AppStateContainer.of(context).blocProvider.journey_bloc;
+    journeyBloc journey_bloc =
+        AppStateContainer.of(context).blocProvider.journey_bloc;
     return Container(
-      margin:EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
       child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-        child: InkWell(
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8.0),
-                topRight: Radius.circular(8.0),
-              ),
-            //children: [Image(image: journey_bloc.journeys[widget.uuid].dateImages[0].fileImage)],
-            child: Image(image: NetworkImage('https://placeimg.com/640/480/any'),
-                // width: 300,
-                //height: 150,
-                fit:BoxFit.fill),
+          clipBehavior: Clip.hardEdge,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0))),
+          child: InkWell(
+            customBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  child: Ink.image(
+                    fit: BoxFit.cover,
+                    image: NetworkImage('https://placeimg.com/900/480/any'),
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.rice_bowl),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                          child: Text("test", style: TextStyle(fontSize: 16.0))
+                        )]
+                ),
+                )],
             ),
-            Row(
-              children: <Widget>[Icon(Icons.rice_bowl),Text("test")],
-            ),
-          ],
-        ),)
-      ),
+            onTap: () {
+              // open the journey for this
+              _openJourneyPage(
+                context: context,
+                fullScreen: false,
+              );
+            },
+          )),
+    );
+  }
+
+  void _openJourneyPage({String journeyUuid, BuildContext context, bool fullScreen}) {
+    Navigator.push(
+        context,
+        // was material route!!! Using Cupertino is apparently not advisable
+        CupertinoPageRoute(
+          fullscreenDialog: fullScreen,
+          builder: (context) => journeyScreen(journeyUuid: journeyUuid,),
+        )
     );
   }
 }
-
