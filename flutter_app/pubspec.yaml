@@ -22,6 +22,7 @@ environment:
 
 dependencies:
   uuid: 3.0.4
+  image_picker: 0.7.4
   flutter:
     sdk: flutter
 
