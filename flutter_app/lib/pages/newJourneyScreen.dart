@@ -4,7 +4,13 @@ import 'package:flutter_app/utilities/styles.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:flutter_app/blocs/app_state.dart';
 import 'package:flutter_app/widgets/coloredTextField.dart';
+import 'package:flutter_app/widgets/firstImagePicker.dart';
 import 'package:flutter_app/widgets/iconPicker.dart';
+import 'package:uuid/uuid.dart';
+
+import 'dart:io';
+
+import 'journeyScreen.dart';
 
 class newJourneyScreen extends StatefulWidget {
   @override
@@ -16,6 +22,7 @@ class newJourneyScreen extends StatefulWidget {
 class _newJourneyScreenState extends State<newJourneyScreen> {
   journeyBloc journey_bloc;
   AppState state;
+  FileImage firstJourneyImage;
 
   final journeyNameController = TextEditingController();
 
@@ -58,7 +65,12 @@ class _newJourneyScreenState extends State<newJourneyScreen> {
                     Padding(padding: EdgeInsets.all(12.0)),
                     IconPicker(callback: (icon) {
                       newJourneyIcon = icon;
-                    },)
+                    },),
+                    Padding(padding: EdgeInsets.all(12.0)),
+                    firstImagePicker(callback: (firstImage){
+                        firstJourneyImage = FileImage(firstImage);
+
+                    }),
                   ],
                 ),
               ),
@@ -70,8 +82,14 @@ class _newJourneyScreenState extends State<newJourneyScreen> {
                   padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                   color: AppColors.inputColor,
                   onPressed: () {
-                    // make a new, empty journey and submit it to the bloc
-                    
+                    String uuid = Uuid().v4();
+                    journey_bloc.journeys[uuid] = journey(title: journeyNameController.text, dateImages:
+                    [dateImage(dateTime: DateTime.now(),fileImage: firstJourneyImage)], icon: Icon(newJourneyIcon));
+
+                    Navigator.push(context, CupertinoPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => journeyScreen(journeyUuid: uuid,)
+                    ));
                   })
             ]),
       ),

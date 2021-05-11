@@ -17,13 +17,6 @@ class journeyBloc{
   }
 
 
-  String addJourney(journey journey, [String uuid]) {
-    // if this is a new journey, no uuid will be provided
-    uuid = uuid ?? Uuid().v4();
-    _journeys[uuid] = journey;
-    return uuid;
-  }
-
 
 
 }

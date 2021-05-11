@@ -26,7 +26,7 @@ class IconPicker extends StatefulWidget {
     Icons.pets,
     Icons.pregnant_woman,
     Icons.rowing,
-    Icons.savings,
+
     Icons.park,
     Icons.grass
   ];

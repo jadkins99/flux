@@ -99,6 +99,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   List<Widget> _buildExpandingActionButtons() {
     final children = <Widget>[];
     final count = widget.children.length;
+
     final step = 90.0 / (count - 1);
     for (var i = 0, angleInDegrees = 0.0;
     i < count;
@@ -106,6 +107,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       children.add(
         _ExpandingActionButton(
           directionInDegrees: angleInDegrees,
+          toggle: _toggle,
           maxDistance: widget.distance,
           progress: _expandAnimation,
           child: widget.children[i],
@@ -143,9 +145,11 @@ class _ExpandableFabState extends State<ExpandableFab>
 
 @immutable
 class _ExpandingActionButton extends StatelessWidget {
+  Function toggle;
   _ExpandingActionButton({
     Key key,
     @required this.directionInDegrees,
+    @required this.toggle,
     @required this.maxDistance,
     @required this.progress,
     @required this.child,

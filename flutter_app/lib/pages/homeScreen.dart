@@ -33,8 +33,8 @@ class _homeScreenState extends State<homeScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              journeyCard(uuid: "BS"),
-              journeyCard(uuid: "CS"),
+              //journeyCard(uuid: "BS"),
+              //journeyCard(uuid: "CS"),
             ],
           ),
         ),

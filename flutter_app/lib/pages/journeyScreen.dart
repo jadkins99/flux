@@ -8,9 +8,12 @@ import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:flutter_app/blocs/app_state.dart';
 import 'package:flutter_app/widgets/expandableFab.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_app/blocs/journeyBloc.dart';
 
 class journeyScreen extends StatefulWidget {
   final String journeyUuid;
+
+  List<dateImage> dateImages;
 
   @override
   journeyScreen({@required this.journeyUuid});
@@ -21,9 +24,9 @@ class journeyScreen extends StatefulWidget {
 class _journeyScreenState extends State<journeyScreen> {
   journeyBloc journey_bloc;
   AppState state;
-
+  journeyBloc bloc;
   File image;
-
+  int currentImageIndex = 0;
   final ImagePicker _picker = ImagePicker();
 
   double _currentSliderValue = 0.0;
@@ -32,6 +35,9 @@ class _journeyScreenState extends State<journeyScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     state = AppStateContainer.of(context);
+    bloc = state.blocProvider.journey_bloc;
+
+    widget.dateImages = bloc.journeys[widget.journeyUuid].dateImages;
   }
 
   Future<File> getImage(ImageSource src) async {
@@ -73,20 +79,24 @@ class _journeyScreenState extends State<journeyScreen> {
               height: MediaQuery.of(context).size.height,
               child: Ink.image(
                 fit: BoxFit.cover,
-                image: (image == null ? NetworkImage('https://placeimg.com/900/480/any') : FileImage(image)),
+                image: (widget.dateImages.elementAt(currentImageIndex).fileImage),
               ),
             ),
             Column(
               children: [
                 Spacer(),
+                Row(
+                    children: [Text(widget.dateImages.elementAt(currentImageIndex).dateTime.toString())]
+                ),
                 Slider(
                   min: 0.0,
-                  max: 10.0,
-                  divisions: 10,
+                  max: (widget.dateImages.length -1 ).toDouble(),
+                  divisions: (widget.dateImages.length),
                   value: _currentSliderValue,
                   onChanged: (value) {
                     setState(() {
                       _currentSliderValue = value;
+                      currentImageIndex = value.toInt();
                     });
                   },
                 ),
@@ -105,10 +115,33 @@ class _journeyScreenState extends State<journeyScreen> {
               child: ExpandableFab(
                 children: [
                   ActionButton(
-                      onPressed: getImageFromCamera,
+                      onPressed: (){
+
+                        Future<File> newImage = getImageFromCamera();
+
+                        newImage.then((value) {
+                          bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
+                          setState(() {});
+                        });
+
+
+
+                      },
                       icon: Icon(Icons.camera_alt)),
                   ActionButton(
-                      onPressed: getImageFromGallery,
+                      onPressed: (){
+
+                      Future<File> newImage = getImageFromGallery();
+
+                      newImage.then((value) {
+                        bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
+                        setState(() {});
+                    });
+
+
+
+    },
+
                       icon: Icon(Icons.camera_roll))
                 ],
                 distance: 112.0,
@@ -116,3 +149,5 @@ class _journeyScreenState extends State<journeyScreen> {
     );
   }
 }
+
+
