@@ -86,10 +86,15 @@ class _newJourneyScreenState extends State<newJourneyScreen> {
                     journey_bloc.journeys[uuid] = journey(title: journeyNameController.text, dateImages:
                     [dateImage(dateTime: DateTime.now(),fileImage: firstJourneyImage)], icon: Icon(newJourneyIcon));
 
-                    Navigator.push(context, CupertinoPageRoute(
-                      fullscreenDialog: true,
-                      builder: (context) => journeyScreen(journeyUuid: uuid,)
-                    ));
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        // was material route!!! Using Cupertino is apparently not advisable
+                        CupertinoPageRoute(
+                            fullscreenDialog: false,
+                            builder: (context) => journeyScreen(journeyUuid: uuid)
+                        )
+                    );
                   })
             ]),
       ),

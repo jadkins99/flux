@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:math';
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +69,9 @@ class _journeyScreenState extends State<journeyScreen> {
     journey_bloc = AppStateContainer.of(context).blocProvider.journey_bloc;
     var journey = journey_bloc.journeys[widget.journeyUuid];
 
+    print(journey.dateImages);
+
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -91,11 +96,12 @@ class _journeyScreenState extends State<journeyScreen> {
                 Slider(
                   min: 0.0,
                   max: (widget.dateImages.length -1 ).toDouble(),
-                  divisions: (widget.dateImages.length),
+                  divisions: max(widget.dateImages.length - 1, 1),
                   value: _currentSliderValue,
                   onChanged: (value) {
                     setState(() {
                       _currentSliderValue = value;
+                      print(_currentSliderValue);
                       currentImageIndex = value.toInt();
                     });
                   },

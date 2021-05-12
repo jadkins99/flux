@@ -23,6 +23,8 @@ Future<void> main() async {
   var cartService = CartServiceTemporary(store);
   var userService = MockUserService(store);*/
 
+  WidgetsFlutterBinding.ensureInitialized();
+
   /// Starting here, everything is used regardless of dependencies
   var blocProvider = BlocProvider(
     journey_bloc: journeyBloc()

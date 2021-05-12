@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utilities/database.dart';
 import 'package:uuid/uuid.dart';
 
 class journeyBloc{
 
   Map<String,journey> _journeys;
+  DatabaseFileRoutines databaseFileRoutines;
+
+  bool initialized = false;
+
+  List<Future<Map<String, journey>>> futures;
 
   Map<String,journey> get journeys => this._journeys;
 
   @override
   journeyBloc() {
+    this.futures = [];
     this._journeys = new Map<String, journey>();
+    this.databaseFileRoutines = DatabaseFileRoutines();
+  }
 
-    // TODO: REMOVE THIS! TESTING ONLY
-    this._journeys["BS"] = journey(title: "BS", dateImages: <dateImage>[], icon: Icon(Icons.description));
-    this._journeys["CS"] = journey(title: "CS", dateImages: <dateImage>[], icon: Icon(Icons.computer));
+  Future<Map<String, journey>> getJourneys() async {
+
+  }
+
+  addOrUpdateJourney(String uuid, journey journey) {
+
+    this._journeys[uuid] = journey;
   }
 
 

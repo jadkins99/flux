@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 class AppStateContainer extends StatefulWidget {
@@ -69,14 +68,9 @@ class _AppStoreContainer extends InheritedWidget {
 
 class BlocProvider {
   journeyBloc journey_bloc;
-  //CatalogBloc catalogBloc;
-  //UserBloc userBloc;
 
   BlocProvider({
 
     @required this.journey_bloc,
-
-
   });
 }
-

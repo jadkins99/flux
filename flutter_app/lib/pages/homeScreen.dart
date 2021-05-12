@@ -33,8 +33,7 @@ class _homeScreenState extends State<homeScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              //journeyCard(uuid: "BS"),
-              //journeyCard(uuid: "CS"),
+              for (String uuid in journey_bloc.journeys.keys) journeyCard(uuid: uuid)
             ],
           ),
         ),
@@ -97,17 +96,17 @@ class _journeyCardState extends State<journeyCard> {
                   height: 300,
                   child: Ink.image(
                     fit: BoxFit.cover,
-                    image: NetworkImage('https://placeimg.com/900/480/any'),
+                    image: journey_bloc.journeys[widget.uuid].dateImages[0].fileImage,
                   ),
                 ),
                 Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.rice_bowl),
+                        journey_bloc.journeys[widget.uuid].icon,
                         Padding(
                           padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                          child: Text("test", style: TextStyle(fontSize: 16.0))
+                          child: Text(journey_bloc.journeys[widget.uuid].title, style: TextStyle(fontSize: 16.0))
                         )]
                 ),
                 )],
