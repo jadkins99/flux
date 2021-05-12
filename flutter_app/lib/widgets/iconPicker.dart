@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/utilities/styles.dart';
 
 class IconPicker extends StatefulWidget {
+  IconData selectedIcon;
+
   List<IconData> icons = [
     Icons.accessibility_new,
     Icons.alarm,
@@ -34,7 +36,8 @@ class IconPicker extends StatefulWidget {
   Function callback;
 
   IconPicker({
-    @required this.callback
+    @required this.callback,
+    @required this.selectedIcon,
   });
 
   @override
@@ -42,7 +45,7 @@ class IconPicker extends StatefulWidget {
 }
 
 class _IconPickerState extends State<IconPicker> {
-  IconData selectedIcon = Icons.image;
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class _IconPickerState extends State<IconPicker> {
                 child: Row(
                   children: [
                     Icon(
-                      this.selectedIcon,
+                      widget.selectedIcon,
                       color: AppColors.inputColor,
                     ),
                     Padding(padding: EdgeInsets.fromLTRB(12.0, 0, 0, 0),),
@@ -84,7 +87,7 @@ class _IconPickerState extends State<IconPicker> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  this.selectedIcon = icon;
+                  widget.selectedIcon = icon;
                   widget.callback(icon);
                 });
                 Navigator.pop(context);

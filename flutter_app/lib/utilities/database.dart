@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,7 +31,7 @@ class DatabaseFileRoutines {
   Future<Database> _initDatabase() async {
     var dir = await _localPath;
     String path = join(dir, _databaseName);
-    return await openDatabase(path, onCreate: _onCreate);
+    return await openDatabase(path, onCreate: _onCreate,version: 1);
   }
 
   void _onCreate(Database db, int version) async {
@@ -37,58 +39,71 @@ class DatabaseFileRoutines {
           CREATE TABLE $journeyTable (
             id TEXT NOT NULL PRIMARY KEY,
             title TEXT NOT NULL,
-            icon INTEGER NOT NULL,
+            icon INTEGER NOT NULL
           );
+          
+          ''');
+
+    await db.execute('''
           
           CREATE TABLE $dateImagesTable (
             date TEXT NOT NULL,
-            image_path TEXT NOT NULL
+            image_path TEXT NOT NULL,
             journey_id TEXT NOT NULL,
             FOREIGN KEY (journey_id) REFERENCES $journeyTable(id)
           );
-    ''');
+   ''');
   }
 
-  Future<void>  saveJourney(String uuid, journey saveJourney) async {
+  Future<void>  saveJourney(String uuid, Journey saveJourney) async {
     int icon = saveJourney.icon.icon.codePoint;
     String title = saveJourney.title;
     Database db = await database;
     await db.rawQuery('''
-      IF EXISTS(SELECT * FROM $journeyTable WHERE id = $uuid)
+    INSERT OR REPLACE INTO  $journeyTable(id,title,icon) VALUES ('$uuid','$title',$icon);
+    ''');
+
+    /*await db.rawQuery('''
+      EXISTS(SELECT * FROM $journeyTable WHERE id = $uuid)
         UPDATE $journeyTable SET title = $title, icon = $icon WHERE id = $uuid
       ELSE
         INSERT INTO $journeyTable (id, title, icon) VALUES ($uuid, $title, $icon);  
-    ''');
+    ''');*/
     for (dateImage di in saveJourney.dateImages) {
       String date = di.dateTime.toString();
       String imagePath = di.fileImage.file.path;
       await db.rawQuery('''
-        IF NOT EXISTS(SELECT * FROM $dateImagesTable WHERE journey_id = $uuid AND date = $date)
-          INSERT INTO $dateImagesTable (date, image_path, journey_id) VALUES ($date, $imagePath, $uuid);
+        INSERT OR REPLACE INTO  $dateImagesTable(journey_id,date,image_path) VALUES ('$uuid','$date','$imagePath');
       ''');
+      /*await db.rawQuery('''
+        NOT EXISTS(SELECT * FROM $dateImagesTable WHERE journey_id = $uuid AND date = $date)
+          INSERT INTO $dateImagesTable (date, image_path, journey_id) VALUES ($date, $imagePath, $uuid);
+      ''');*/
     }
   }
 
-  Future<Map<String, journey>> getJourneys() async {
-    Map<String, journey> journeys = {};
+  Future<Map<String, Journey>> getJourneys() async {
+    Map<String, Journey> journeys = {};
     Database db = await database;
     List<Map> journeyMaps = await db.rawQuery('SELECT id FROM $journeyTable');
     print("list of maps (journeyMaps): " + journeyMaps.toString());
     for (Map journeyMap in journeyMaps) {
       print(journeyMap.values.elementAt(0));
       String uuid = journeyMap.values.elementAt(0);
-      journey currentJourney = await _getJourney(uuid);
+      Journey currentJourney = await _getJourney(uuid);
       journeys[uuid] = currentJourney;
     }
+    return journeys;
   }
 
-  Future<journey> _getJourney(String uuid) async {
+  Future<Journey> _getJourney(String uuid) async {
     Database db = await database;
-    List<Map> journeys = await db.rawQuery('SELECT * FROM $journeyTable WHERE id = $uuid'); // should have one value returned in map
-    List<Map> dateImagesPairs = await db.rawQuery('SELECT * FROM $dateImagesTable WHERE journey_uuid = $uuid'); // can have many
+    List<Map> journeys = await db.rawQuery("SELECT * FROM $journeyTable WHERE id = '$uuid' "); // should have one value returned in map
+    List<Map> dateImagesPairs = await db.rawQuery("SELECT * FROM $dateImagesTable WHERE journey_id = '$uuid' "); // can have many
     Map journeyMap = journeys.elementAt(0);
     String title = journeyMap["title"];
-    Icon icon = Icon(IconData(journeyMap["icon"]));
+
+    Icon icon = Icon(IconData(journeyMap["icon"],fontFamily: "MaterialIcons"));
     List<dateImage> dateImages = [];
     for (Map dateImagePair in dateImagesPairs) {
       dateImages.add(dateImage(
@@ -96,7 +111,7 @@ class DatabaseFileRoutines {
         fileImage: FileImage(File(dateImagePair["image_path"]))
       ));
     }
-    return journey(title: title, icon: icon, dateImages: dateImages);
+    return Journey(title: title, icon: icon, dateImages: dateImages);
   }
 
 }

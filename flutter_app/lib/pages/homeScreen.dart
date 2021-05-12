@@ -27,15 +27,28 @@ class _homeScreenState extends State<homeScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text("flux"),
+        backgroundColor: AppColors.appBarColor,
+        title: Text("flux",style: TextStyle(color:AppColors.textColor),),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              for (String uuid in journey_bloc.journeys.keys) journeyCard(uuid: uuid)
-            ],
-          ),
+          child: StreamBuilder(stream:journey_bloc.journeyNotification,builder: (BuildContext context, AsyncSnapshot snapshot){
+            if (snapshot.data == true) {
+              print(journey_bloc.initialized);
+              print("journeys"+ journey_bloc.journeys.toString());
+              return Column(
+                children: <Widget>[
+
+                  for (String uuid in journey_bloc.journeys.keys) journeyCard(uuid: uuid)
+                ],
+              );
+            }
+
+            else{
+              return Column(children: [Container()]);
+            }
+          },  )
+
         ),
       ),
       floatingActionButton: FloatingActionButton(

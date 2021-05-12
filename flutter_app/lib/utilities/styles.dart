@@ -22,12 +22,14 @@ class AppColors {
   static const background = Color(0xFFBCECFC);
   static const floatingActionButtonColor = Color(0xFF76C8E5);
   static const plusColor = Color(0xFFFFFFFF);
+  static const appBarColor = Color(0xFF308DBB);
+  static const textColor = Color(0xFF000000);
 
   static const inputColor = Colors.blue;
 
   /// Text Theme
   /// For cards, content, and canvas:
-  static const textColor = Color.fromRGBO(35, 35, 50, .7);
+  //static const textColor = Color.fromRGBO(35, 35, 50, .7);
 
   /// For 'Primary' theme
   /// For headings
@@ -48,7 +50,7 @@ Map<int, Color> _primarySwatch = {
   200: Color(0xFFFCB8AB),
   300: Color(0xFFF2A9A5),
   400: Color(0xFFE29896),
-  500: Color(0xFFC18083),
+  500: Color(0x61FFFFFF),
   600: Color(0xFFA36A72),
   700: Color(0xFF567B84),
   800: Color(0xFF664046),
@@ -56,10 +58,10 @@ Map<int, Color> _primarySwatch = {
 };
 
 Map<int, Color> _accentSwatch = {
-  50: Color(0xFFFEEAE6),
+  50: Color(0xFFFAF8F8),
   100: Color(0xFFFFCEB9),
   200: Color(0xFFFEAE8B),
-  300: Color(0xFFFC8F5C),
+  300: Color(0xFF308DBB),
   400: Color(0xFFFA7736),
   500: Color(0xFFF86203),
   600: Color(0xFFEE5C00),

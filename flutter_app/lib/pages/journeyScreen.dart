@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:math';
-
+import 'package:flutter_app/utilities/styles.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_app/blocs/app_state.dart';
 import 'package:flutter_app/widgets/expandableFab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
-
+import 'package:flutter_app/pages/editScreen.dart';
 class journeyScreen extends StatefulWidget {
   final String journeyUuid;
 
@@ -74,6 +74,27 @@ class _journeyScreenState extends State<journeyScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+
+        title: Row(
+          children: [
+            Text(journey.title,
+          style: TextStyle(color:AppColors.textColor),),
+          Spacer(),
+            IconButton(icon: Icon(Icons.more_vert), onPressed: (){
+              Navigator.push(context,  CupertinoPageRoute(
+                  fullscreenDialog: false,
+                  builder: (context) => editScreen(journeyUuid: widget.journeyUuid,journey: journey,)
+              )
+              );
+
+            })
+        ]
+        ),
+        backgroundColor: AppColors.appBarColor,
+
+      ),
+
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -110,10 +131,11 @@ class _journeyScreenState extends State<journeyScreen> {
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 18.0),
                 )
               ],
-            )
+            ),
+
           ],
         ),
-      ),
+    ),
       floatingActionButton: Opacity(
           opacity: 1.0,
           child: Padding(
@@ -125,9 +147,18 @@ class _journeyScreenState extends State<journeyScreen> {
 
                         Future<File> newImage = getImageFromCamera();
 
+
                         newImage.then((value) {
-                          bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
-                          setState(() {});
+                          if(value != null) {
+                            Journey jouney = bloc.journeys[widget.journeyUuid];
+                            journey.dateImages.add(dateImage(dateTime: DateTime
+                                .now(), fileImage: FileImage(value)));
+                            bloc.addOrUpdateJourney(widget.journeyUuid, jouney);
+
+
+                            // bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
+                            setState(() {});
+                          }
                         });
 
 
@@ -140,9 +171,17 @@ class _journeyScreenState extends State<journeyScreen> {
                       Future<File> newImage = getImageFromGallery();
 
                       newImage.then((value) {
-                        bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
-                        setState(() {});
-                    });
+                        if(value != null) {
+                          Journey jouney = bloc.journeys[widget.journeyUuid];
+                          journey.dateImages.add(dateImage(dateTime: DateTime
+                              .now(), fileImage: FileImage(value)));
+                          bloc.addOrUpdateJourney(widget.journeyUuid, jouney);
+
+
+                          // bloc.journeys[widget.journeyUuid].dateImages.add(dateImage(dateTime: DateTime.now(),fileImage: FileImage(value)));
+                          setState(() {});
+                        }
+                      });
 
 
 

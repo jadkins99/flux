@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/utilities/styles.dart';
 import 'package:flutter_app/blocs/journeyBloc.dart';
 import 'package:flutter_app/blocs/app_state.dart';
@@ -12,19 +12,21 @@ import 'dart:io';
 
 import 'journeyScreen.dart';
 
-class newJourneyScreen extends StatefulWidget {
+class editScreen extends StatefulWidget {
+  String journeyUuid;
+  Journey journey;
   @override
-  newJourneyScreen({@required String journeyUuid});
+  editScreen({@required  this.journeyUuid,@required this.journey});
 
-  _newJourneyScreenState createState() => _newJourneyScreenState();
+  _editScreenState createState() => _editScreenState();
 }
 
-class _newJourneyScreenState extends State<newJourneyScreen> {
+class _editScreenState extends State<editScreen> {
   journeyBloc journey_bloc;
   AppState state;
-  FileImage firstJourneyImage;
+  IconData iconPicked;
 
-  final journeyNameController = TextEditingController();
+  final titleController = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -35,16 +37,14 @@ class _newJourneyScreenState extends State<newJourneyScreen> {
   @override
   Widget build(BuildContext context) {
     journey_bloc = state.blocProvider.journey_bloc;
-
-    IconData newJourneyIcon = Icons.image;
-
+    //titleController.text = widget.journey
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.appBarColor,
         title: Text(
-            "Start a new Journey",
-            style: TextStyle(color:AppColors.textColor),),
+          "Edit " + widget.journey.title,
+          style: TextStyle(color:AppColors.textColor),),
       ),
       body: SafeArea(
         child: Column(
@@ -64,50 +64,41 @@ class _newJourneyScreenState extends State<newJourneyScreen> {
                     ColoredTextField(
                         label: "Journey Name",
                         color: Colors.blue,
-                        controller: journeyNameController),
+                        controller: titleController),
                     Padding(padding: EdgeInsets.all(12.0)),
                     IconPicker(
-                      selectedIcon: Icons.image,
+                      selectedIcon: widget.journey.icon.icon,
                       callback: (icon) {
 
-                      newJourneyIcon = icon;
+                      iconPicked = icon;
                     },),
                     Padding(padding: EdgeInsets.all(12.0)),
-                    firstImagePicker(callback: (firstImage){
-                        firstJourneyImage = FileImage(firstImage);
 
-                    }),
                   ],
                 ),
               ),
               MaterialButton(
                   child: Text(
-                    "Continue",
+                    "Save",
                     style: TextStyle(color: Colors.white),
                   ),
                   padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                   color: AppColors.inputColor,
                   onPressed: () {
-                    String uuid = Uuid().v4();
-                    journey_bloc.addOrUpdateJourney(uuid, Journey(title: journeyNameController.text, dateImages:
-                    [dateImage(dateTime: DateTime.now(),fileImage: firstJourneyImage)], icon: Icon(newJourneyIcon)));
+                    String uuid = widget.journeyUuid;
+                    journey_bloc.addOrUpdateJourney(uuid, Journey(title: titleController.text, dateImages:
+                    widget.journey.dateImages,icon: Icon(iconPicked)));
 
 
                     Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        // was material route!!! Using Cupertino is apparently not advisable
-                        CupertinoPageRoute(
-                            fullscreenDialog: false,
-                            builder: (context) => journeyScreen(journeyUuid: uuid)
-                        )
-                    );
+                    Navigator.pop(context);
+
                   })
             ]),
       ),
     );
   }
-  
+
   Row _makeDescription(String description) {
     return Row(children: <Widget>[
       Padding(
