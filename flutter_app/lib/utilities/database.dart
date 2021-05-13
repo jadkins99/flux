@@ -41,20 +41,18 @@ class DatabaseFileRoutines {
             title TEXT NOT NULL,
             icon INTEGER NOT NULL
           );
-          
           ''');
 
-    await db.execute('''
-          
+    await db.execute('''          
           CREATE TABLE $dateImagesTable (
             date TEXT NOT NULL,
-            image_path TEXT NOT NULL,
+            image_path TEXT NOT NULL PRIMARY KEY,
             journey_id TEXT NOT NULL,
             FOREIGN KEY (journey_id) REFERENCES $journeyTable(id)
           );
    ''');
   }
-
+  
   Future<void>  saveJourney(String uuid, Journey saveJourney) async {
     int icon = saveJourney.icon.icon.codePoint;
     String title = saveJourney.title;
@@ -67,7 +65,7 @@ class DatabaseFileRoutines {
       EXISTS(SELECT * FROM $journeyTable WHERE id = $uuid)
         UPDATE $journeyTable SET title = $title, icon = $icon WHERE id = $uuid
       ELSE
-        INSERT INTO $journeyTable (id, title, icon) VALUES ($uuid, $title, $icon);  
+        INSERT INTO $journeyTable (id, title, icon) VALUES ($uuid, $title, $icon);
     ''');*/
     for (dateImage di in saveJourney.dateImages) {
       String date = di.dateTime.toString();

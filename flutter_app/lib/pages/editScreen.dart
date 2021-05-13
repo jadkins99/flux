@@ -32,6 +32,7 @@ class _editScreenState extends State<editScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     state = AppStateContainer.of(context);
+    titleController.text = widget.journey.title;
   }
 
   @override

@@ -29,6 +29,7 @@ class _journeyScreenState extends State<journeyScreen> {
   journeyBloc bloc;
   File image;
   int currentImageIndex = 0;
+  Timer timer;
   final ImagePicker _picker = ImagePicker();
 
   double _currentSliderValue = 0.0;
@@ -65,12 +66,30 @@ class _journeyScreenState extends State<journeyScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    this.timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     journey_bloc = AppStateContainer.of(context).blocProvider.journey_bloc;
     var journey = journey_bloc.journeys[widget.journeyUuid];
 
-    print(journey.dateImages);
+    var date = widget.dateImages.elementAt(currentImageIndex).dateTime;
+    print(date);
 
+    if (this.timer != null) this.timer.cancel();
+    this.timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) {
+
+      _currentSliderValue = ((_currentSliderValue + 1).toInt() % widget.dateImages.length).toDouble();
+      currentImageIndex = _currentSliderValue.toInt();
+      setState(() {
+
+      });
+    }
+    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -112,7 +131,11 @@ class _journeyScreenState extends State<journeyScreen> {
               children: [
                 Spacer(),
                 Row(
-                    children: [Text(widget.dateImages.elementAt(currentImageIndex).dateTime.toString())]
+                    children: [
+                      Padding(padding: EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),),
+                      Text(date.month.toString() + "/" + date.day.toString() + "/" + date.year.toString(),
+                      style: TextStyle(fontSize: 24.0, color: Colors.white))
+                    ]
                 ),
                 Slider(
                   min: 0.0,

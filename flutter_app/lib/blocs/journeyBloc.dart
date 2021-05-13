@@ -5,7 +5,7 @@ import 'package:flutter_app/utilities/database.dart';
 import 'package:uuid/uuid.dart';
 import 'package:rxdart/rxdart.dart';
 
-class journeyBloc{
+class journeyBloc {
 
   Map<String,Journey> _journeys;
   Future<Map<String,Journey>> futureJourneys;
